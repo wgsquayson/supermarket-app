@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <Layout
       title="Suas compras"
-      subtitle="Ainda sem compras. Registre produtos e compras nos botões abaixo."
+      subtitle="Ainda sem compras. Registre uma compra no botão abaixo."
       footer={
         <Button colorScheme="teal" size="lg" onClick={handleNewPurchasePress}>
           Registrar compra

@@ -1,5 +1,5 @@
-export function formatCurrency(value: string) {
-  value = value.replace(".", "").replace(",", "").replace(/\D/g, "");
+export function formatCurrency(value: string | number) {
+  value = String(value).replace(".", "").replace(",", "").replace(/\D/g, "");
 
   const result = new Intl.NumberFormat("pt-BR", {
     minimumFractionDigits: 2,

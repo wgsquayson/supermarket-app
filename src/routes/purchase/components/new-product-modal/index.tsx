@@ -1,6 +1,5 @@
 import {
   Button,
-  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -13,65 +12,147 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Input } from "../../../../components/ui";
-import { FormEvent, useState } from "react";
-import { formatCurrency } from "../../../../utils/currency";
+import { FormEvent, useContext, useEffect, useState } from "react";
+import { formatCurrency, unformatCurrency } from "../../../../utils/currency";
+import { Product } from "../../types";
+import ProductList from "../product-list";
+import PurchaseContext from "../../context";
 
-export default function NewProductModal(props: Omit<ModalProps, "children">) {
+type NewProductModalProps = Omit<ModalProps, "children"> & {
+  product?: Product;
+  onFinishEdit?: () => void;
+};
+
+export default function NewProductModal({
+  product,
+  onFinishEdit,
+  ...props
+}: NewProductModalProps) {
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
   const [showForm, setShowForm] = useState(false);
 
+  const { products, addProduct, updateProduct } = useContext(PurchaseContext);
+
+  function clearForm() {
+    setName("");
+    setCategory("");
+    setPrice("");
+  }
+
   function onClose() {
     setShowForm(false);
+    clearForm();
+    onFinishEdit?.();
     props.onClose();
+  }
+
+  function onUpdateList(product: Product) {
+    addProduct(product);
+    onClose();
   }
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    props.onClose();
+
+    if (product) {
+      updateProduct(product.id, {
+        name,
+        category,
+        price: unformatCurrency(price),
+      });
+
+      return onClose();
+    }
+
+    addProduct({
+      id: "9",
+      name,
+      category,
+      price: unformatCurrency(price),
+    });
+
+    onClose();
   }
+
+  useEffect(() => {
+    if (product) {
+      setName(product.name);
+      setCategory(product.category ?? "");
+      setPrice(product?.price ? formatCurrency(product.price) : "");
+      setShowForm(true);
+    } else clearForm();
+  }, [product]);
 
   return (
     <Modal {...props}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Adicionar produto à compra</ModalHeader>
+      <ModalOverlay h="100vh" />
+      <ModalContent maxH="80vh" overflowY="auto">
+        <ModalHeader>
+          {product ? "Editar produto" : "Adicionar produto à compra"}
+        </ModalHeader>
         <ModalCloseButton onClick={onClose} />
         <ModalBody>
+          {!showForm ? (
+            <Button
+              width="full"
+              variant="outline"
+              colorScheme="teal"
+              onClick={() => {
+                setShowForm(true);
+              }}
+              mb={3}
+            >
+              Adicionar novo produto
+            </Button>
+          ) : null}
           {showForm ? (
             <form onSubmit={handleSubmit} id="new-product-form">
               <Stack gap={3}>
-                <Input label="Nome do produto" isRequired />
-                <Flex gap={3}>
-                  <Input label="Quantidade" isRequired />
-                  <Input
-                    label="Valor"
-                    value={price}
-                    onChange={(e) => setPrice(formatCurrency(e.target.value))}
-                    variant="currency"
-                    placeholder="0,00"
-                  />
-                </Flex>
+                <Input
+                  label="Nome do produto"
+                  isRequired
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <Input
+                  label="Categoria"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                />
+                <Input
+                  label="Valor"
+                  value={price}
+                  onChange={(e) => setPrice(formatCurrency(e.target.value))}
+                  variant="currency"
+                  placeholder="0,00"
+                />
                 <Text size="sm" color="grey">
                   *campos obrigatórios
                 </Text>
               </Stack>
             </form>
           ) : (
-            <Text>Você ainda não possui produtos cadastrados.</Text>
+            <ProductList onClick={onUpdateList} products={products} />
           )}
         </ModalBody>
 
         <ModalFooter>
-          <Button
-            colorScheme="red"
-            mr={3}
-            onClick={showForm ? () => setShowForm(false) : onClose}
-          >
-            Cancelar
-          </Button>
-          <Button variant="ghost" onClick={() => setShowForm(true)}>
-            {showForm ? "Salvar produto" : "Novo produto"}
-          </Button>
+          {showForm ? (
+            <>
+              <Button
+                colorScheme="red"
+                mr={3}
+                onClick={() => setShowForm(false)}
+              >
+                Cancelar
+              </Button>
+              <Button variant="ghost" type="submit" form="new-product-form">
+                Salvar produto
+              </Button>
+            </>
+          ) : null}
         </ModalFooter>
       </ModalContent>
     </Modal>
