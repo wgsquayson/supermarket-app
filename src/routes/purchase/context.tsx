@@ -12,7 +12,7 @@ type PurchaseItem = {
 type PurchaseContextValues = {
   products: Product[];
   selectedProducts: PurchaseItem[];
-  addProduct: (product: Product) => void;
+  addProduct: (product: Omit<Product, "id">) => void;
   removeProduct: (productId: string) => void;
   updateProduct: (
     productId: string,
@@ -45,25 +45,13 @@ export function PurchaseProvider({ children }: PropsWithChildren) {
     );
   });
 
-  function addProduct(product: Product) {
-    let result = true;
-
+  function addProduct(product: Omit<Product, "id">) {
     setSelectedProducts((prev) => {
-      const productIsSelected = prev.find(
-        (item) => item.product.id === product.id
-      );
-
-      if (productIsSelected) {
-        result = false;
-        return prev;
-      }
-
-      return prev.concat({ product, quantity: 1 });
+      return prev.concat({
+        product: { ...product, id: String(Math.random()) },
+        quantity: 1,
+      });
     });
-
-    console.log(result);
-
-    return result;
   }
 
   function removeProduct(productId: string) {

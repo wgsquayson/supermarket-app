@@ -67,7 +67,6 @@ export default function NewProductModal({
     }
 
     addProduct({
-      id: "9",
       name,
       category,
       price: unformatCurrency(price),

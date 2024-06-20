@@ -31,7 +31,7 @@ export default function ProductList({ products, onClick }: ProductListProps) {
       <Text>Clique em um produto para adicioná-lo</Text>
       {filteredProducts.length > 0 ? (
         filteredProducts.map((product) => (
-          <ProductItem product={product} onClick={onClick} />
+          <ProductItem key={product.id} product={product} onClick={onClick} />
         ))
       ) : (
         <Text textAlign="center" color="grey">
