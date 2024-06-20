@@ -1,4 +1,4 @@
-import { Button, Flex, Stack, Text, useDisclosure } from "@chakra-ui/react";
+import { Button, Flex, Stack, useDisclosure } from "@chakra-ui/react";
 import { Layout } from "../../../components/ui";
 import { useNavigate } from "react-router-dom";
 import NewProductModal from "../components/new-product-modal";
