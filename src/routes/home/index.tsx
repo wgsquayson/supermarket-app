@@ -1,4 +1,4 @@
-import { Button, Flex } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "../../components/ui";
 
