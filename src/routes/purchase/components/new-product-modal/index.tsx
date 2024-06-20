@@ -51,6 +51,9 @@ export default function NewProductModal(props: Omit<ModalProps, "children">) {
                     placeholder="0,00"
                   />
                 </Flex>
+                <Text size="sm" color="grey">
+                  *campos obrigatórios
+                </Text>
               </Stack>
             </form>
           ) : (

@@ -22,7 +22,6 @@ export default function PurchaseForm() {
         subtitle="Seus produtos cadastrados abaixo aparecerão aqui"
         footer={
           <Stack gap={3}>
-            <Text color="grey">*campos obrigatórios</Text>
             <Button
               colorScheme="teal"
               size="lg"
@@ -37,6 +36,7 @@ export default function PurchaseForm() {
                 colorScheme="red"
                 size="lg"
                 onClick={handleCancel}
+                variant="ghost"
               >
                 Cancelar e voltar
               </Button>
